@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './product.schema';
 import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
+import { DeleteProductDto } from './delete-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -28,5 +29,20 @@ export class ProductsService {
     return this.productModel.findByIdAndUpdate(id, updateProductDto, {
       new: true,
     });
+  }
+
+  async hardDelete(id: string) {
+    const deleted = await this.productModel.findByIdAndDelete(id).exec();
+    if (!deleted) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+    return { message: 'Product Deleted Successfuly' };
+  }
+
+  async softDelete(id: string, deleteProductDto: DeleteProductDto) {
+    const softDeleted = await this.productModel
+      .findByIdAndUpdate(id, deleteProductDto)
+      .exec();
+    return softDeleted;
   }
 }

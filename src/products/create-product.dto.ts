@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString } from 'class-validator';
+import { IsBoolean, IsInt, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -21,4 +21,8 @@ export class CreateProductDto {
   @IsString()
   @ApiProperty()
   image: string;
+
+  @IsBoolean()
+  @ApiProperty({ default: false })
+  isDeleted: boolean;
 }
